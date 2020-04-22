@@ -3,7 +3,7 @@
 
 ## References
 
-https://easyeda.com/editor#id=06fde9941fd74225a6f9060f40bda28a
+https://easyeda.com/editor#id=f97502b5f0dc4333beb1626a0fecb156
 
 https://github.com/SteveJustin1963/tec-Vectrex
 
