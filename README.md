@@ -12,7 +12,9 @@ https://easyeda.com/editor#id=f97502b5f0dc4333beb1626a0fecb156
 
 
 ## References
-https://en.wikipedia.org/wiki/Persistence_of_vision
+- https://en.wikipedia.org/wiki/Persistence_of_vision
+- https://www.instructables.com/Rotating-LED-Display-That-Shows-Infinite-Words-POV/
+- https://letsmakeprojects.com/make-pov-display-using-arduino-or-rotating-led-display-in-easy-way/
 
 ### Iterate
 https://github.com/SteveJustin1963/tec-Vectrex
