@@ -1,0 +1,89 @@
+
+
+;Assumptions:
+;- Port `#10` is used for data.
+;- Port `#11` is used for the clock.
+;- Port `#12` is used for the latch.
+;- `HL` register pair will hold the address of the `pattern` array.
+;- `B` register will hold the pattern size.
+;- `DE` register pair will hold the delay count.
+
+;Here is a Z80 assembly version of the code:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Initialize
+    LD HL, PATTERN    ; Point HL to the PATTERN array
+    LD B, 5           ; Pattern size is 5
+    LD DE, 1200       ; 60000 / (50 * 16), the delay value
+
+MAIN_LOOP:
+    LD C, B           ; Load the pattern size into C
+
+PATTERN_LOOP:
+    LD A, (HL)        ; Load pattern byte from HL into A
+    CALL SHIFTOUT     ; Call shift out routine
+    INC HL            ; Increment pattern pointer
+    CALL DELAY        ; Delay for stepDelay milliseconds
+    DEC C             ; Decrement loop counter
+    JR NZ, PATTERN_LOOP ; Loop back if not done
+
+    JR MAIN_LOOP      ; Jump back to the main loop
+
+; Subroutine to shift out a byte
+SHIFTOUT:
+    PUSH BC           ; Save BC
+    LD B, 8           ; Set loop counter to 8 bits
+
+SHIFTOUT_LOOP:
+    RLCA              ; Rotate A left, most significant bit goes to carry
+    CALL SETDATA      ; Set data line based on the carry flag
+    CALL CLOCKPULSE   ; Clock pulse
+    DJNZ SHIFTOUT_LOOP ; Decrement B and loop back if not zero
+
+    CALL LATCHPULSE   ; Latch pulse
+    POP BC            ; Restore BC
+    RET
+
+; Set data line high or low
+SETDATA:
+    JR NC, SETLOW     ; Jump if carry flag is not set (bit was 0)
+    LD A, 1           ; Otherwise, bit was 1
+    OUT (#10), A      ; Set data line high
+    RET
+SETLOW:
+    XOR A             ; Clear A (Set to 0)
+    OUT (#10), A      ; Set data line low
+    RET
+
+; Generate clock pulse
+CLOCKPULSE:
+    LD A, 1
+    OUT (#11), A      ; Set clock line high
+    XOR A             ; Clear A
+    OUT (#11), A      ; Set clock line low
+    RET
+
+; Generate latch pulse
+LATCHPULSE:
+    LD A, 1
+    OUT (#12), A      ; Set latch line high
+    XOR A             ; Clear A
+    OUT (#12), A      ; Set latch line low
+    RET
+
+; Delay subroutine
+DELAY:
+    PUSH DE           ; Save DE
+DELAY_LOOP:
+    NOP              ; Do nothing (just a time waste)
+    NOP
+    DEC DE           ; Decrease DE
+    LD A, D          ; Check if DE has reached zero
+    OR E
+    JR NZ, DELAY_LOOP ; If not zero, loop back
+    POP DE           ; Restore DE
+    RET
+
+; Data section
+PATTERN:
+    DEFB 0x0F, 0x0E, 0x0C, 0x08, 0x00
