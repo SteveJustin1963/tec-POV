@@ -8,82 +8,10 @@ https://easyeda.com/editor#id=f97502b5f0dc4333beb1626a0fecb156
 
 
 ## code
-
+- code-1.c
  example of C code that you can use to drive the rotating LED bar using two shift registers (74LS595) from a Z80 single-board computer (SBC). This code assumes that you have the necessary hardware connections set up and have the appropriate libraries or drivers installed for the Z80 SBC.
 
-```c
-#include <stdint.h>
-#include <stdbool.h>
 
-// Define the pins connected to the shift registers
-#define DATA_PIN  0x01  // Example pin number for data (D0)
-#define CLOCK_PIN 0x02  // Example pin number for clock (D1)
-#define LATCH_PIN 0x03  // Example pin number for latch (D2)
-
-// Define the number of LEDs in the bar
-#define NUM_LEDS  16
-
-// Define the delay between rotations (in milliseconds)
-#define ROTATION_DELAY 12  // Adjust as per your requirements
-
-// Function to shift out the data to the shift registers
-void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t latchPin, uint8_t data)
-{
-    for (uint8_t i = 0; i < 8; i++) {
-        // Send each bit of data starting from the most significant bit
-        bool bit = (data >> (7 - i)) & 1;
-
-        // Set the data pin to the appropriate value (HIGH or LOW)
-        // based on the current bit
-        if (bit) {
-            // Example code assuming you have a function to set a pin HIGH
-            setPinHigh(dataPin);
-        } else {
-            // Example code assuming you have a function to set a pin LOW
-            setPinLow(dataPin);
-        }
-
-        // Generate a clock pulse to shift the bit into the shift register
-        // Example code assuming you have a function to generate a clock pulse
-        generateClockPulse(clockPin);
-    }
-
-    // Generate a latch pulse to update the output of the shift register
-    // Example code assuming you have a function to generate a latch pulse
-    generateLatchPulse(latchPin);
-}
-
-int main()
-{
-    // Initialize the shift registers
-    // Example code assuming you have a function to set the pins as OUTPUT
-    setPinOutput(DATA_PIN);
-    setPinOutput(CLOCK_PIN);
-    setPinOutput(LATCH_PIN);
-
-    // Character or image pattern data
-    uint8_t pattern[] = {0x0F, 0x0E, 0x0C, 0x08, 0x00};  // Example pattern
-
-    // Calculate the delay between steps based on rotation speed (RPM)
-    // and the number of steps per revolution
-    uint16_t stepDelay = (60000 / (50 * NUM_LEDS));
-
-    // Main loop
-    while (true) {
-        // Iterate over each pattern element
-        for (uint8_t i = 0; i < sizeof(pattern) / sizeof(pattern[0]); i++) {
-            // Shift out the pattern data to the shift registers
-            shiftOut(DATA_PIN, CLOCK_PIN, LATCH_PIN, pattern[i]);
-
-            // Delay between steps
-            // Example code assuming you have a function to delay in milliseconds
-            delayMilliseconds(stepDelay);
-        }
-    }
-
-    return 0;
-}
-```
 
 Please note that this code is meant to serve as a starting point and assumes that you have the necessary functions or libraries for interacting with the hardware. You may need to modify the code based on your specific setup and requirements.
 
